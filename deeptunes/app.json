@@ -8,17 +8,17 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/logoDas.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#FFFF00"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/react-logo@3x.png",
+        "backgroundColor": "#FFFF00"
       },
       "package": "com.deepak7.deeptunes"
     },
@@ -35,7 +35,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "c105899e-ea45-49b7-8f47-bdfc6608d43e"
+        "projectId": "9f89187e-675a-4ef6-b8cd-e39dfb3c7a19"
       }
     }
   }

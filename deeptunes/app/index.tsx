@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, Modal } from 'react-native';
 import { Audio } from 'expo-av';
 import * as MediaLibrary from 'expo-media-library';
-import PlayerControls from '@/components/PlayerControls';
 import CoverImage from '@/components/CoverImage';
 import TrackList from '@/components/TrackList';
 import { ITrack } from '@/functions/types';
@@ -57,14 +56,6 @@ const HomeScreen: React.FC = () => {
         setModalVisible(true);
     };
 
-    const pauseSound = async () => {
-        if (sound) {
-            await sound.pauseAsync();
-            setIsPlaying(false);
-            setModalVisible(false);
-        }
-    };
-
     useEffect(() => {
         return sound
             ? () => {
@@ -78,22 +69,6 @@ const HomeScreen: React.FC = () => {
             <Text style={[styles.title, { color: colors.tint }]}>DeepTunes</Text>
             <CoverImage uri={coverImage} />
             <TrackList musicFiles={musicFiles} playSound={playSound} />
-            <Modal
-                transparent={true}
-                animationType="slide"
-                visible={isModalVisible}
-                onRequestClose={() => {
-                    pauseSound(); // Optional: Close modal on back press
-                }}
-            >
-                <View style={styles.modalContainer}>
-                    <PlayerControls
-                        playSound={playSound}
-                        pauseSound={pauseSound}
-                        isPlaying={isPlaying}
-                    />
-                </View>
-            </Modal>
         </View>
     );
 };

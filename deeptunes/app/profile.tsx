@@ -24,12 +24,6 @@ const SongPlayerScreen: React.FC = () => {
                 setSound(newSound);
                 await newSound.playAsync();
                 setIsPlaying(true);
-
-                newSound.setOnPlaybackStatusUpdate(status => {
-                    if (status.didJustFinish) {
-                        setIsPlaying(false);
-                    }
-                });
             } catch (error) {
                 Alert.alert('Error', 'Could not load the audio file. Please try again later.');
             }
@@ -42,7 +36,7 @@ const SongPlayerScreen: React.FC = () => {
                 sound.unloadAsync();
             }
         };
-    }, [uri]); // Only run when uri changes
+    }, [uri]);
 
     const handlePlayPause = async () => {
         if (sound) {

@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 5,
-        paddingVertical: 10,
+        paddingVertical: 5,
         gap: 10
     },
     coverImage: {
