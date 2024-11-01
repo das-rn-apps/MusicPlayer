@@ -4,11 +4,10 @@ import { router } from 'expo-router';
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, Image, View } from 'react-native';
 import { useColorSchemeContext } from '@/hooks/ColorSchemeContext';
+import { randomNum } from '@/functions/randomNumber';
 
 const TrackItem: React.FC<TrackItemProps> = ({ track, playSound }) => {
     const { colors } = useColorSchemeContext();
-
-
     return (
         <TouchableOpacity
             onPress={() => playSound(track.uri)}
@@ -18,13 +17,22 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, playSound }) => {
         >
             <TouchableOpacity
                 onPress={() => {
-                    router.push('/profile');
+                    const song = {
+                        uri: track.uri,
+                        title: track.filename,
+                        artist: track.artist,
+                        coverImage: track.coverUri,
+                    };
+                    router.push({
+                        pathname: '/profile',
+                        params: song
+                    });
                 }}
                 accessible
                 accessibilityLabel="Go to profile"
             >
                 <Image
-                    source={{ uri: track.coverUri || 'https://via.placeholder.com/50' }}
+                    source={{ uri: track.coverUri || `https://picsum.photos/${randomNum()}` }}
                     style={styles.coverImage}
                 />
             </TouchableOpacity>
@@ -50,8 +58,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 5,
-        padding: 10,
-        borderRadius: 5,
+        paddingVertical: 10,
+        gap: 10
     },
     coverImage: {
         width: 50,

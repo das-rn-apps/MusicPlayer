@@ -24,7 +24,7 @@ const HomeScreen: React.FC = () => {
             });
             setMusicFiles(assets);
         } catch (error) {
-            console.error('Error fetching music files:', error);
+            console.log('Error fetching music files:', error);
         }
     };
 
