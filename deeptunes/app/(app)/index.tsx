@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, Modal } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
 import * as MediaLibrary from 'expo-media-library';
-import CoverImage from '@/components/CoverImage';
 import TrackList from '@/components/TrackList';
 import { ITrack } from '@/functions/types';
 import { useFocusEffect } from '@react-navigation/native';
@@ -11,10 +10,7 @@ import { useColorSchemeContext } from "@/hooks/ColorSchemeContext";
 const HomeScreen: React.FC = () => {
     const { colors } = useColorSchemeContext();
     const [sound, setSound] = useState<Audio.Sound | null>(null);
-    const [isPlaying, setIsPlaying] = useState(false);
     const [musicFiles, setMusicFiles] = useState<ITrack[]>([]);
-    const [coverImage, setCoverImage] = useState<string | null>(null);
-    const [isModalVisible, setModalVisible] = useState(false);
 
     const fetchMusicFiles = async () => {
         try {
@@ -52,8 +48,6 @@ const HomeScreen: React.FC = () => {
         const { sound: newSound } = await Audio.Sound.createAsync({ uri });
         setSound(newSound);
         await newSound.playAsync();
-        setIsPlaying(true);
-        setModalVisible(true);
     };
 
     useEffect(() => {
@@ -67,7 +61,6 @@ const HomeScreen: React.FC = () => {
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             <Text style={[styles.title, { color: colors.tint }]}>DeepTunes</Text>
-            <CoverImage uri={coverImage} />
             <TrackList musicFiles={musicFiles} playSound={playSound} />
         </View>
     );
@@ -80,20 +73,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     title: {
-        fontSize: 32,
+        fontSize: 30,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginBottom: 20,
-        letterSpacing: 1,
-    },
-    modalContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        position: "absolute",
-        bottom: 10,
-        width: '100%'
-    },
+        letterSpacing: 2,
+    }
 });
 
 export default HomeScreen;

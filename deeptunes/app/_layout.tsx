@@ -1,13 +1,11 @@
+import * as React from 'react';
+import { Slot } from 'expo-router';
 import { ColorSchemeProvider } from '@/hooks/ColorSchemeContext';
-import { Stack } from 'expo-router';
 
-export default function RootLayout() {
-  return (
-    <ColorSchemeProvider>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="profile" options={{ headerShown: false }} />
-      </Stack>
-    </ColorSchemeProvider>
-  );
+export default function Root() {
+    return (
+        <ColorSchemeProvider>
+            <Slot />
+        </ColorSchemeProvider>
+    );
 }
