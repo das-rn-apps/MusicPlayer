@@ -1,75 +1,69 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, Modal } from 'react-native';
 import { Audio } from 'expo-av';
 import * as MediaLibrary from 'expo-media-library';
-// import { parseFile } from 'music-metadata';
 import PlayerControls from '@/components/PlayerControls';
+import CoverImage from '@/components/CoverImage';
+import TrackList from '@/components/TrackList';
+import { ITrack } from '@/functions/types';
+import { useFocusEffect } from '@react-navigation/native';
+import { useColorSchemeContext } from "@/hooks/ColorSchemeContext";
 
 const HomeScreen: React.FC = () => {
+    const { colors } = useColorSchemeContext();
     const [sound, setSound] = useState<Audio.Sound | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [musicFiles, setMusicFiles] = useState<any[]>([]);
+    const [musicFiles, setMusicFiles] = useState<ITrack[]>([]);
     const [coverImage, setCoverImage] = useState<string | null>(null);
-    const [currentTrack, setCurrentTrack] = useState<string | null>(null);
+    const [isModalVisible, setModalVisible] = useState(false);
+
+    const fetchMusicFiles = async () => {
+        try {
+            const { assets } = await MediaLibrary.getAssetsAsync({
+                mediaType: ['audio'],
+            });
+            setMusicFiles(assets);
+        } catch (error) {
+            console.error('Error fetching music files:', error);
+        }
+    };
 
     useEffect(() => {
-        (async () => {
+        const requestPermissions = async () => {
             const { status } = await MediaLibrary.requestPermissionsAsync();
             if (status === 'granted') {
                 fetchMusicFiles();
             } else {
                 console.log('Permission to access music library was denied');
             }
-        })();
+        };
+        requestPermissions();
     }, []);
 
-    const fetchMusicFiles = async () => {
-        const { assets } = await MediaLibrary.getAssetsAsync({
-            mediaType: ['audio'],
-        });
-        setMusicFiles(assets);
-    };
+    useFocusEffect(
+        useCallback(() => {
+            fetchMusicFiles();
+        }, [])
+    );
 
     const playSound = async (uri: string) => {
         if (sound) {
-            await sound.unloadAsync(); // Unload previous sound
+            await sound.unloadAsync();
         }
-
-        const { sound: newSound } = await Audio.Sound.createAsync(
-            { uri } // Use the file path
-        );
+        const { sound: newSound } = await Audio.Sound.createAsync({ uri });
         setSound(newSound);
-        setCurrentTrack(uri);
         await newSound.playAsync();
         setIsPlaying(true);
-
-        // Fetch and set cover image
-        // fetchMetadata(uri);
+        setModalVisible(true);
     };
 
     const pauseSound = async () => {
         if (sound) {
             await sound.pauseAsync();
             setIsPlaying(false);
+            setModalVisible(false);
         }
     };
-
-    // const fetchMetadata = async (uri: string) => {
-    //     try {
-    //         const metadata = await parseFile(uri); // Use parseFile to get metadata
-    //         console.log("Fetched metadata:", metadata);
-
-    //         // Check if cover image exists
-    //         if (metadata.common.picture && metadata.common.picture.length > 0) {
-    //             const base64Image = `data:${metadata.common.picture[0].format};base64,${metadata.common.picture[0].data.toString('base64')}`;
-    //             setCoverImage(base64Image);
-    //         } else {
-    //             setCoverImage(null); // Reset if no cover image
-    //         }
-    //     } catch (error) {
-    //         console.error("Failed to fetch audio metadata:", error);
-    //     }
-    // };
 
     useEffect(() => {
         return sound
@@ -80,30 +74,26 @@ const HomeScreen: React.FC = () => {
     }, [sound]);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Music Player</Text>
-            {coverImage && (
-                <Image
-                    source={{ uri: coverImage }}
-                    style={styles.coverImage}
-                    resizeMode="cover"
-                />
-            )}
-            <FlatList
-                data={musicFiles}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => playSound(item.uri)}>
-                        <Text style={styles.trackTitle}>{item.filename}</Text>
-                    </TouchableOpacity>
-                )}
-                style={styles.trackList}
-            />
-            <PlayerControls
-                playSound={playSound}
-                pauseSound={pauseSound}
-                isPlaying={isPlaying}
-            />
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <Text style={[styles.title, { color: colors.tint }]}>DeepTunes</Text>
+            <CoverImage uri={coverImage} />
+            <TrackList musicFiles={musicFiles} playSound={playSound} />
+            <Modal
+                transparent={true}
+                animationType="slide"
+                visible={isModalVisible}
+                onRequestClose={() => {
+                    pauseSound(); // Optional: Close modal on back press
+                }}
+            >
+                <View style={styles.modalContainer}>
+                    <PlayerControls
+                        playSound={playSound}
+                        pauseSound={pauseSound}
+                        isPlaying={isPlaying}
+                    />
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -111,36 +101,23 @@ const HomeScreen: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f0f0f0',
-        padding: 20,
+        paddingTop: 50,
+        paddingHorizontal: 10,
     },
     title: {
         fontSize: 32,
         fontWeight: 'bold',
+        textAlign: 'center',
         marginBottom: 20,
-        color: '#333',
+        letterSpacing: 1,
     },
-    coverImage: {
-        width: 200,
-        height: 200,
-        borderRadius: 10,
-        marginBottom: 20,
-        borderColor: '#ccc',
-        borderWidth: 1,
-    },
-    trackList: {
-        width: '100%',
-    },
-    trackTitle: {
-        fontSize: 18,
-        marginVertical: 10,
-        padding: 10,
-        backgroundColor: '#fff',
-        borderRadius: 5,
-        borderWidth: 1,
-        borderColor: '#ddd',
+    modalContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        position: "absolute",
+        bottom: 10,
+        width: '100%'
     },
 });
 
