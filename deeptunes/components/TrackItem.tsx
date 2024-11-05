@@ -24,7 +24,7 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, playSound }) => {
                         coverImage: track.coverUri,
                     };
                     router.push({
-                        pathname: '/profile',
+                        pathname: '/explore',
                         params: song
                     });
                 }}
@@ -32,7 +32,7 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, playSound }) => {
                 accessibilityLabel="Go to profile"
             >
                 <Image
-                    source={{ uri: track.coverUri || `https://picsum.photos/${randomNum()}` }}
+                    source={{ uri: track.coverUri || `https://picsum.photos/${randomNum(200)}` }}
                     style={styles.coverImage}
                 />
             </TouchableOpacity>

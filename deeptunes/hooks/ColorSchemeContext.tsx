@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useColorScheme as useSystemColorScheme } from 'react-native';
 import { Colors } from '@/constants/Colors';
@@ -17,21 +16,8 @@ export const ColorSchemeProvider: React.FC<{ children: React.ReactNode }> = ({ c
     );
 
     useEffect(() => {
-        const loadColorScheme = async () => {
-            const savedColorScheme = await AsyncStorage.getItem('colorScheme');
-            if (savedColorScheme) {
-                setColorScheme(savedColorScheme as 'light' | 'dark');
-            }
-        };
-        loadColorScheme();
-    }, []);
-
-    useEffect(() => {
-        const saveColorScheme = async () => {
-            await AsyncStorage.setItem('colorScheme', colorScheme);
-        };
-        saveColorScheme();
-    }, [colorScheme]);
+        setColorScheme(systemColorScheme === 'dark' ? 'dark' : 'light');
+    }, [systemColorScheme]);
 
     const colors = Colors[colorScheme];
 

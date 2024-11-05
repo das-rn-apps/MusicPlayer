@@ -1,24 +1,24 @@
 {
   "expo": {
-    "name": "deeptunes",
-    "slug": "deeptunes",
+    "name": "DeepTunes",
+    "slug": "DeepTunes",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "DeepTunes",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/logoDas.png",
+      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FFFF00"
+      "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/react-logo@3x.png",
-        "backgroundColor": "#FFFF00"
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
       },
       "package": "com.deepak7.deeptunes"
     },
@@ -35,7 +35,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "9f89187e-675a-4ef6-b8cd-e39dfb3c7a19"
+        "projectId": "5b150ad6-122c-4505-915a-2136e129780d"
       }
     }
   }

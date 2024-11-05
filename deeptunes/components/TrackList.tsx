@@ -26,8 +26,7 @@ const styles = StyleSheet.create({
     },
     trackList: {
         width: '100%',
-        paddingHorizontal: 15,
-        marginTop: 10,
+        paddingHorizontal: 10,
     },
 });
 
